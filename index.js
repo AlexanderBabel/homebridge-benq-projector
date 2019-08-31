@@ -5,13 +5,31 @@
 // var SerialPort = require("serialport");
 var Service, Characteristic;
 const Transport = require('./Transport');
+const { createAccessory } = require('./accessoryCreator');
 var version = require('./package.json').version;
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
     
-    homebridge.registerAccessory("homebridge-benq-projector", "BenQ-Projector", BenQProjector);
+    homebridge.registerPlatform("homebridge-benq-projector", "BenQ-Projector", BenQProjectorPlatform);
+}
+
+class BenQProjectorPlatform {
+  constructor (log, config = {}, homebridge) {
+    this.log = log;
+    this.config = config;
+    this.homebridge = homebridge;
+  }
+
+  accessories (callback) {
+    const { config, log } = this;
+    const tvs = [new BenQProjector(log, config)];
+    const TV = this.homebridge.hap.Accessory.Categories.TELEVISION;
+
+    this.homebridge.publishExternalAccessories(this, tvs.map(tv => createAccessory(tv, tv.name, TV, homebridge)));
+    callback([]);
+  }
 }
     
     
