@@ -23,11 +23,11 @@ class BenQProjectorPlatform {
   }
 
   accessories (callback) {
-    const { config, log } = this;
+    const { config, log, homebridge } = this;
     const tvs = [new BenQProjector(log, config)];
     const TV = this.homebridge.hap.Accessory.Categories.TELEVISION;
 
-    this.homebridge.publishExternalAccessories(this, tvs.map(tv => createAccessory(tv, tv.name, TV, homebridge)));
+    homebridge.publishExternalAccessories(this, tvs.map(tv => createAccessory(tv, tv.name, TV, homebridge)));
     callback([]);
   }
 }
